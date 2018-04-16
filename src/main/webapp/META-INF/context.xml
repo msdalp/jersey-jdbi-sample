@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context path="/">
+
+    <Resource name="jdbc/hikariSrc"
+              auth="Container"
+              factory="com.zaxxer.hikari.HikariJNDIFactory"
+              type="javax.sql.DataSource"
+              driverClassName="com.mysql.jdbc.Driver"
+              jdbcUrl="jdbc:mysql://localhost:3306/jersey?useUnicode=true&amp;characterEncoding=utf8&amp;useSSL=false&amp;serverTimezone=UTC"
+              autoCommit="true"
+              characterEncoding="utf8"
+              useUnicode="true"
+              encoding="UTF-8"
+              leakDetectionThreshold="10000"
+              poolName="BlogJeysey"
+              password="’mypassword’"
+              username="root"
+              minimumIdle="5" maximumPoolSize="20" connectionTimeout="20000" maxLifetime="1800000"/>
+</Context>
