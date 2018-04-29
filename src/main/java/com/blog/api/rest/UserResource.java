@@ -3,6 +3,7 @@ package com.blog.api.rest;
 import com.blog.api.DBIManager;
 import com.blog.api.db.AuthUser;
 import com.blog.api.db.UserDao;
+import com.blog.api.resp.Responsive;
 import org.mindrot.jbcrypt.BCrypt;
 
 import javax.annotation.security.RolesAllowed;
@@ -22,7 +23,7 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("")
     public Response getUsers() {
-        return Response.ok().entity(dao.getUsers()).build();
+        return Responsive.ofData(dao.getUsers());
     }
 
 
@@ -30,7 +31,7 @@ public class UserResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{userId}")
     public Response getUser(@PathParam("userId") int userId) {
-        return Response.ok().entity(dao.getUser(userId)).build();
+        return Responsive.ofData(dao.getUser(userId));
     }
 
     @POST
@@ -52,7 +53,7 @@ public class UserResource {
         // we set that id to user body
         user.setId(dao.addUser(user));
         // return the user with HTTP 201 status
-        return Response.status(Response.Status.CREATED).entity(user).build();
+        return Responsive.created(user);
     }
 
     @DELETE
@@ -75,6 +76,6 @@ public class UserResource {
         // update user with jdbi method
         dao.updateUser(user);
         // return HTTP 201 with the body
-        return Response.status(Response.Status.CREATED).entity(user).build();
+        return Responsive.created(user);
     }
 }

@@ -20,7 +20,6 @@ public class SecurityUser implements SecurityContext {
 
     @Override
     public boolean isUserInRole(String s) {
-        System.out.println("checking role");
         return user.getRole().name().equals(s);
     }
 

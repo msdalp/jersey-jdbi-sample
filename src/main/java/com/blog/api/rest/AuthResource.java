@@ -1,14 +1,17 @@
 package com.blog.api.rest;
 
 import com.blog.api.DBIManager;
-import com.blog.api.resp.FailedLogin;
 import com.blog.api.db.AuthUser;
 import com.blog.api.db.Token;
 import com.blog.api.db.TokenDao;
 import com.blog.api.db.UserDao;
+import com.blog.api.resp.Responsive;
 import org.mindrot.jbcrypt.BCrypt;
 
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.math.BigInteger;
@@ -31,7 +34,7 @@ public class AuthResource {
     public Response login(AuthUser userLogin) {
 
         if (!userLogin.isValid()) {
-            return Response.status(401).entity(new FailedLogin()).build();
+            return Responsive.loginFailed();
         }
 
         final AuthUser user = DBIManager.getJdbi().onDemand(UserDao.class).getUserByName(userLogin.getUsername());
@@ -40,7 +43,7 @@ public class AuthResource {
         // check if password matches as well
         // otherwise throw not authorized
         if (user == null || !BCrypt.checkpw(userLogin.getPassword(), user.getPassword())) {
-            return Response.status(401).entity(new FailedLogin()).build();
+            return Responsive.loginFailed();
         }
 
         final Token token = new Token();
@@ -51,7 +54,7 @@ public class AuthResource {
         token.setExpireAt(Timestamp.from(Instant.now().plus(1,ChronoUnit.DAYS)));
         // get the inserted id
         token.setId(DBIManager.getJdbi().onDemand(TokenDao.class).addToken(token));
-        return Response.status(Response.Status.CREATED).entity(token).build();
+        return Responsive.created(token);
     }
 
 }

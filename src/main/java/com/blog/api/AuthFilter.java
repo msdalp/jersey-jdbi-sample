@@ -4,7 +4,7 @@ import com.blog.api.db.AuthUser;
 import com.blog.api.db.Token;
 import com.blog.api.db.TokenDao;
 import com.blog.api.db.UserDao;
-import com.blog.api.resp.NoAuth;
+import com.blog.api.resp.Responsive;
 import com.blog.api.util.SecurityUser;
 
 import javax.annotation.Priority;
@@ -16,6 +16,7 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
@@ -37,13 +38,13 @@ public class AuthFilter implements ContainerRequestFilter {
 
         if (ws.equals("auth")) {
             return;
-        }else if(tokenHeader == null){
-            requestContext.abortWith(Response.status(401).entity(new NoAuth()).build());
+        } else if (tokenHeader == null) {
+            Responsive.noAuthAbort(requestContext);
         }
 
         final Token token = DBIManager.getJdbi().onDemand(TokenDao.class).getToken(tokenHeader);
         if (token == null) {
-            requestContext.abortWith(Response.status(401).entity(new NoAuth()).build());
+            Responsive.noAuthAbort(requestContext);
         } else {
             final AuthUser authUser = DBIManager.getJdbi().onDemand(UserDao.class).getUser(token.getUserId());
             requestContext.setSecurityContext(new SecurityUser(authUser));
